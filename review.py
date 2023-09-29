@@ -5,7 +5,7 @@ import random
 
 review_time = [1, 2, 5, 8, 15, 30, 60]
 header = ['id', 'name', 'link', 'review date',
-          'next review date']
+          'next review date', 'created date', 'tags']
 date_format = '%Y-%m-%d'
 today = datetime.today().date()
 
@@ -64,7 +64,8 @@ def get_next_review_date(review_date, next_review_date):
         5: 8,
         8: 15,
         15: 30,
-        30: 60
+        30: 60,
+        60: 9999
     }
 
     r_date = get_date_obj(review_date)
@@ -74,18 +75,21 @@ def get_next_review_date(review_date, next_review_date):
 
 # problem related
 def print_by_line(l):
-    for line in l:
-        print(line)
+    print(*l, sep='\n')
 
 
 def list_all_problems():
+    print("")
+    print(f"Total has {len(problem_list)} problems:")
     print_by_line(problem_list)
-    prompt_operation()
+    resume_operation()
 
 
 def list_review_problems_for_today():
+    print("")
+    print(f"Total has {len(todays_list)} problems:")
     print_by_line(todays_list)
-    prompt_operation()
+    resume_operation()
 
 
 def add_new_problem():
@@ -95,29 +99,28 @@ def add_new_problem():
     new_problem['link'] = input("Problem link: ")
     new_problem['review date'] = today.strftime(date_format)
     new_problem['next review date'] = get_next_date(1)
+    new_problem['tags'] = input("Problem tags, please provide in comma separated format: ")
 
     problem_list.append(new_problem)
     write_new_problem(new_problem)
-    prompt_operation()
+    resume_operation()
 
 
 def review_questions():
     print(f"Tere are {len(todays_list)} problems need to be reviewed.")
-    need_to_update = len(todays_list) > 0
 
     while todays_list:
         curr = todays_list.pop()
 
         print(curr)
-        print('Do you need to review it now? Press y or n.')
+        print(
+            'Do you need to add the problem back to the top of review list? Press y or n.')
         curr['next review date'] = get_next_date(1) if input().lower(
         ) == 'y' else get_next_review_date(curr['review date'], curr['next review date'])
         curr['review date'] = today.isoformat()
-
-    if need_to_update:
         update_problem_list()
 
-    prompt_operation()
+    resume_operation()
 
 
 def review_random_question():
@@ -126,16 +129,21 @@ def review_random_question():
     review_question = problem_list[random_int]
 
     print(review_question)
-    print('Do you need to review it now? Press y or n.')
+    print('Do you need to add the problem back to the top of review list? Press y or n.')
     review_question['next review date'] = get_next_date(1) if input().lower(
     ) == 'y' else get_next_review_date(review_question['review date'], review_question['next review date'])
     review_question['review date'] = today.isoformat()
 
     update_problem_list()
 
-    prompt_operation()
+    resume_operation()
 
 # get user inputs & operate based on input
+
+
+def resume_operation():
+    input("\nPress any key to continue...\n")
+    prompt_operation()
 
 
 def prompt_operation():
