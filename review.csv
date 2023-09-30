@@ -17,3 +17,10 @@ id,name,link,review date,next review date,created date,tags
 42,Trapping Rain Water,https://leetcode.com/problems/trapping-rain-water/,2023-09-29,2023-10-01,2023-09-28,two pointers
 74,Search a 2D Matrix,https://leetcode.com/problems/search-a-2d-matrix/,2023-09-29,2023-09-30,2023-09-29,binary search
 875,Koko Eating Bananas,https://leetcode.com/problems/koko-eating-bananas/,2023-09-29,2023-09-30,2023-09-29,binary search
+153,Find Minimum in Rotated Sorted Array,https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/,2023-09-29,2023-09-30,2023-09-29,binary search
+20,Valid Parentheses,https://leetcode.com/problems/valid-parentheses/,2023-09-29,2023-09-30,2023-09-29,stack
+155,Min Stack,https://leetcode.com/problems/min-stack/description/,2023-09-29,2023-09-30,2023-09-29,stack
+150,Evaluate Reverse Polish Notation,https://leetcode.com/problems/evaluate-reverse-polish-notation/,2023-09-29,2023-09-30,2023-09-29,stack
+22,Generate Parentheses,https://leetcode.com/problems/generate-parentheses/,2023-09-29,2023-09-30,2023-09-29,"dynamic programming,backtracking"
+739,Daily Temperatures,https://leetcode.com/problems/daily-temperatures/,2023-09-29,2023-09-30,2023-09-29,"monotonic stack"
+853,Car Fleet,https://leetcode.com/problems/car-fleet/,2023-09-29,2023-09-30,2023-09-29,monotonic stack

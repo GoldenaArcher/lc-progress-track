@@ -94,12 +94,13 @@ def list_review_problems_for_today():
 
 def add_new_problem():
     new_problem = {}
-    new_problem['id'] = input("Problem Id: ")
-    new_problem['name'] = input("Problem name: ")
-    new_problem['link'] = input("Problem link: ")
+    new_problem['id'] = input("Problem Id: ").strip()
+    new_problem['name'] = input("Problem name: ").strip()
+    new_problem['link'] = input("Problem link: ").strip()
     new_problem['review date'] = today.strftime(date_format)
+    new_problem['created date'] = today.strftime(date_format)
     new_problem['next review date'] = get_next_date(1)
-    new_problem['tags'] = input("Problem tags, please provide in comma separated format: ")
+    new_problem['tags'] = input("Problem tags, please provide in comma separated format: ").strip()
 
     problem_list.append(new_problem)
     write_new_problem(new_problem)
@@ -138,9 +139,18 @@ def review_random_question():
 
     resume_operation()
 
+
+def get_questions_by_tag():
+    tag_name = input('Please provide tag name: ')
+    tag_questions = [d for d in problem_list if tag_name in d['tags']]
+
+    print(f"There are {len(tag_questions)} match with tag name: {tag_name}")
+    print_by_line(tag_questions)
+
+    resume_operation()
+
+
 # get user inputs & operate based on input
-
-
 def resume_operation():
     input("\nPress any key to continue...\n")
     prompt_operation()
@@ -155,6 +165,7 @@ def prompt_operation():
     3. Add a new problem
     4. Review problems
     5. Review a random problem
+    6. List questions by tag
     
     Press "q" to quit
     ==========================================
@@ -172,6 +183,8 @@ def prompt_operation():
             review_questions()
         elif user_input == '5':
             review_random_question()
+        elif user_input == '6':
+            get_questions_by_tag()
         elif user_input.lower() == 'q':
             print("Bye")
             sys.exit()
