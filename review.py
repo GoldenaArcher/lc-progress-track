@@ -2,6 +2,7 @@ import sys
 import csv
 from datetime import datetime, timedelta
 import random
+from tabulate import tabulate
 
 review_time = [1, 2, 5, 8, 15, 30, 60]
 header = ['id', 'name', 'link', 'review date',
@@ -75,7 +76,13 @@ def get_next_review_date(review_date, next_review_date):
 
 # problem related
 def print_by_line(l):
-    print(*l, sep='\n')
+    if not l:
+        return
+
+    table_data = [list(item.values()) for item in l]
+    headers = l[0].keys()
+
+    print(tabulate(table_data, headers=headers, tablefmt='grid'))
 
 
 def list_all_problems():
@@ -100,8 +107,11 @@ def add_new_problem():
     new_problem['review date'] = today.strftime(date_format)
     new_problem['created date'] = today.strftime(date_format)
     new_problem['next review date'] = get_next_date(1)
-    new_problem['tags'] = input("Problem tags, please provide in comma separated format: ").strip()
+    new_problem['tags'] = input(
+        "Problem tags, please provide in comma separated format: ").strip()
 
+    print('The question added:')
+    print_by_line([new_problem])
     problem_list.append(new_problem)
     write_new_problem(new_problem)
     resume_operation()
@@ -113,11 +123,18 @@ def review_questions():
     while todays_list:
         curr = todays_list.pop()
 
-        print(curr)
+        print_by_line([curr])
         print(
-            'Do you need to add the problem back to the top of review list? Press y or n.')
-        curr['next review date'] = get_next_date(1) if input().lower(
-        ) == 'y' else get_next_review_date(curr['review date'], curr['next review date'])
+            'Do you need to add the problem back to the top of review list? Press y or n to update review date. Press q to quit.')
+
+        i = input().lower()
+
+        if i == 'q':
+            todays_list.append(curr)
+            break
+
+        curr['next review date'] = get_next_date(1) if i == 'y' else get_next_review_date(
+            curr['review date'], curr['next review date'])
         curr['review date'] = today.isoformat()
         update_problem_list()
 
@@ -129,13 +146,13 @@ def review_random_question():
     random_int = random.randint(0, len(problem_list) - 1)
     review_question = problem_list[random_int]
 
-    print(review_question)
+    print_by_line([review_question])
     print('Do you need to add the problem back to the top of review list? Press y or n.')
-    review_question['next review date'] = get_next_date(1) if input().lower(
-    ) == 'y' else get_next_review_date(review_question['review date'], review_question['next review date'])
-    review_question['review date'] = today.isoformat()
 
-    update_problem_list()
+    if input().lower() == 'y':
+        review_question['next review date'] = get_next_date(1)
+        review_question['review date'] = today.isoformat()
+        update_problem_list()
 
     resume_operation()
 
@@ -146,6 +163,31 @@ def get_questions_by_tag():
 
     print(f"There are {len(tag_questions)} match with tag name: {tag_name}")
     print_by_line(tag_questions)
+
+    resume_operation()
+
+
+def get_questions_on_date(review_date):
+    return [d for d in problem_list if review_date == d['next review date']]
+
+
+def get_questions_by_review_date():
+    review_date = input('Please provide review date: ')
+    review_date_questions = get_questions_on_date(review_date)
+
+    print(
+        f"There are {len(review_date_questions)} match with review date: {review_date}")
+    print_by_line(review_date_questions)
+
+    resume_operation()
+
+
+def get_next_n_days_plan():
+    n_day = input('How many days do you want to check: ')
+    for i in range(int(n_day)):
+        next_review_date = get_next_date(i + 1)
+        next_review_questions = get_questions_on_date(next_review_date)
+        print(f'There are {len(next_review_questions)} questions needed to be refiewed on {next_review_date}')
 
     resume_operation()
 
@@ -166,6 +208,8 @@ def prompt_operation():
     4. Review problems
     5. Review a random problem
     6. List questions by tag
+    7. List questions by review date
+    8. Print questions need to be reviewed for next n days
     
     Press "q" to quit
     ==========================================
@@ -185,6 +229,10 @@ def prompt_operation():
             review_random_question()
         elif user_input == '6':
             get_questions_by_tag()
+        elif user_input == '7':
+            get_questions_by_review_date()
+        elif user_input == '8':
+            get_next_n_days_plan()
         elif user_input.lower() == 'q':
             print("Bye")
             sys.exit()
